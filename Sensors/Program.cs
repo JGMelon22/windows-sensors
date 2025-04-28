@@ -1,4 +1,4 @@
-﻿using Sensors;
+﻿using Sensors.Services;
 
 HardwareMonitorService hardwareMonitorService = new();
 hardwareMonitorService.Monitor();
