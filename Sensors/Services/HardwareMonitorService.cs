@@ -23,7 +23,38 @@ public class HardwareMonitorService
 
         foreach (IHardware hardware in computer.Hardware)
         {
+            // Set color based on hardware type and manufacturer
+            if (hardware.HardwareType == HardwareType.Cpu)
+            {
+                if (hardware.Name.Contains("AMD", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else if (hardware.Name.Contains("Intel", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                }
+            }
+            else if (hardware.HardwareType == HardwareType.GpuNvidia)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            else if (hardware.HardwareType == HardwareType.GpuAmd)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            else if (hardware.HardwareType == HardwareType.GpuIntel)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
+            else
+            {
+                Console.ResetColor(); // Default color for other hardware types
+            }
+
+            // Print hardware information
             Console.WriteLine($"Hardware: {hardware.HardwareType} - {hardware.Name}");
+            Console.ResetColor(); // Reset color after printing the title
             Console.WriteLine(new string('-', 50));
 
             foreach (IHardware subhardware in hardware.SubHardware)
