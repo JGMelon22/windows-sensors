@@ -19,32 +19,45 @@ public class HardwareMonitorService
         computer.Open();
         computer.Accept(new UpdateVisitor());
 
-        HardwareType[] supportedHardwareTypes =
-        [
-            HardwareType.Cpu,
-            HardwareType.GpuNvidia,
-            HardwareType.GpuAmd,
-            HardwareType.GpuIntel
-        ];
+        Console.WriteLine("=== Hardware Monitoring Information ===");
 
         foreach (IHardware hardware in computer.Hardware)
         {
-            // Include CPU and all GPU types (discrete and integrated)
-            if (supportedHardwareTypes.Contains(hardware.HardwareType))
-            {
-                Console.WriteLine("Hardware: {0}", hardware.Name);
+            Console.WriteLine($"Hardware: {hardware.HardwareType} - {hardware.Name}");
+            Console.WriteLine(new string('-', 50));
 
-                foreach (ISensor sensor in hardware.Sensors)
+            foreach (IHardware subhardware in hardware.SubHardware)
+            {
+                Console.WriteLine($"\tSubhardware: {subhardware.Name}");
+                foreach (ISensor sensor in subhardware.Sensors)
                 {
-                    // Filter for temperature sensors
                     if (sensor.SensorType == SensorType.Temperature)
                     {
-                        Console.WriteLine("\tSensor: {0}, Temperature: {1:F2}°C", sensor.Name, sensor.Value);
+                        Console.WriteLine($"\t\tSensor: {sensor.Name,-30} Value: {sensor.Value?.ToString("0.00")} °C");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\t\tSensor: {sensor.Name,-30} Value: {sensor.Value?.ToString("0.00") ?? "N/A"} {sensor.SensorType}");
                     }
                 }
             }
+
+            foreach (ISensor sensor in hardware.Sensors)
+            {
+                if (sensor.SensorType == SensorType.Temperature)
+                {
+                    Console.WriteLine($"\tSensor: {sensor.Name,-30} Value: {sensor.Value?.ToString("0.00")} °C");
+                }
+                else
+                {
+                    Console.WriteLine($"\tSensor: {sensor.Name,-30} Value: {sensor.Value?.ToString("0.00") ?? "N/A"} {sensor.SensorType}");
+                }
+            }
+
+            Console.WriteLine();
         }
 
+        Console.WriteLine("========================================");
         computer.Close();
     }
 }
